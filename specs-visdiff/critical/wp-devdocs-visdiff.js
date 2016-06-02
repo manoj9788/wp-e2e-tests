@@ -7,6 +7,9 @@ import LoginFlow from '../../lib/flows/login-flow.js';
 
 import DevdocsDesignPage from '../../lib/pages/devdocs-design-page.js';
 
+import webdriver from 'selenium-webdriver';
+const by = webdriver.By;
+
 const mochaVisDiffTimeOut = config.get( 'mochaVisDiffTimeoutMS' );
 const mochaDevDocsTimeOut = config.get( 'mochaDevDocsTimeoutMS' );
 const startBrowserTimeoutMS = config.get( 'startBrowserTimeoutMS' );
@@ -67,65 +70,62 @@ test.describe( 'DevDocs Visual Diff (' + screenSizeName + ')', function() {
 
 				for ( const href of hrefs ) {
 					let title;
-					let compactable;
 
 					// Open the design element
 					flow.execute( function() {
+						let titleSplit = href.split( '/' );
+						title = titleSplit[ titleSplit.length - 1 ];
 						return driver.get( href );
 					} );
-					// Scroll back to the top of the page
-					flow.execute( function() {
-						return driver.executeScript( 'window.scrollTo( 0, 0 )' );
-					} );
-					// Get the title
-					flow.execute( function() {
-						return devdocsDesignPage.getCurrentElementTitle().then( function( _title ) {
-							title = _title;
-						} );
-					} );
-					// Hide the masterbar for clean CSS stitching
-					flow.execute( function() {
-						return devdocsDesignPage.hideMasterbar();
-					} );
+//					// Scroll back to the top of the page
+//					flow.execute( function() {
+//						return driver.executeScript( 'window.scrollTo( 0, 0 )' );
+//					} );
+//					// Get the title
+//					flow.execute( function() {
+//						return devdocsDesignPage.getCurrentElementTitle().then( function( _title ) {
+//							title = _title;
+//						} );
+//					} );
+//					// Hide the masterbar for clean CSS stitching
+//					flow.execute( function() {
+//						return devdocsDesignPage.hideMasterbar();
+//					} );
 					// Take the screenshot
 					flow.execute( function() {
-						return driverHelper.eyesScreenshot( driver, eyes, title );
+						return driverHelper.eyesScreenshot( driver, eyes, title, by.id( 'primary' ) );
 					} );
-					// Scroll back to the top of the page
-					flow.execute( function() {
-						return driver.executeScript( 'window.scrollTo( 0, 0 )' );
-					} );
+//					// Scroll back to the top of the page
+//					flow.execute( function() {
+//						return driver.executeScript( 'window.scrollTo( 0, 0 )' );
+//					} );
 					// Check for Compact button
 					flow.execute( function() {
-						return devdocsDesignPage.isCurrentElementCompactable().then( function( _compactable ) {
-							compactable = _compactable;
+						return devdocsDesignPage.isCurrentElementCompactable().then( function( compactable ) {
+							if ( compactable ) {
+								return devdocsDesignPage.getCurrentElementCompactButton().then( function( button ) {
+									// Chrome needs a more precise click on the mobile width to avoid overlapping elements
+									if ( global.browserName.toLowerCase() === 'chrome' ) {
+										return driver.actions().mouseMove( button, {x: 3, y: 3} ).click().perform().then( function() {
+											return driverHelper.eyesScreenshot( driver, eyes, title + ' (Compact)', by.id( 'primary' ) );
+										} );
+									}
+
+									return button.click().then( function() {
+										return driverHelper.eyesScreenshot( driver, eyes, title + ' (Compact)', by.id( 'primary' ) );
+									} );
+								} );
+							}
 						} );
 					} );
-					// Click the Compact button (if available)
-					flow.execute( function() {
-						if ( compactable ) {
-							return devdocsDesignPage.getCurrentElementCompactButton().then( function( button ) {
-								// Chrome needs a more precise click on the mobile width to avoid overlapping elements
-								if ( global.browserName.toLowerCase() === 'chrome' ) {
-									return driver.actions().mouseMove( button, {x: 3, y: 3} ).click().perform().then( function() {
-										return driverHelper.eyesScreenshot( driver, eyes, title + ' (Compact)' );
-									} );
-								}
-
-								return button.click().then( function() {
-									return driverHelper.eyesScreenshot( driver, eyes, title + ' (Compact)' );
-								} );
-							} );
-						}
-					} );
-					// Scroll back to the top of the page
-					flow.execute( function() {
-						return driver.executeScript( 'window.scrollTo( 0, 0 )' );
-					} );
-					// Return to the main list
-					flow.execute( function() {
-						return devdocsDesignPage.returnToAllComponents();
-					} );
+//					// Scroll back to the top of the page
+//					flow.execute( function() {
+//						return driver.executeScript( 'window.scrollTo( 0, 0 )' );
+//					} );
+//					// Return to the main list
+//					flow.execute( function() {
+//						return devdocsDesignPage.returnToAllComponents();
+//					} );
 				}
 			} );
 		} );
@@ -134,7 +134,7 @@ test.describe( 'DevDocs Visual Diff (' + screenSizeName + ')', function() {
 	test.it( 'Verify Typography', function() {
 		devdocsDesignPage.openTypography().then( function() {
 			devdocsDesignPage.hideMasterbar().then( function() {
-				driverHelper.eyesScreenshot( driver, eyes, 'DevDocs Design (Typography)' );
+				driverHelper.eyesScreenshot( driver, eyes, 'DevDocs Design (Typography)', by.id( 'primary' ) );
 			} );
 		} );
 	} );
@@ -142,7 +142,7 @@ test.describe( 'DevDocs Visual Diff (' + screenSizeName + ')', function() {
 	test.it( 'Verify App Components', function() {
 		devdocsDesignPage.openAppComponents().then( function() {
 			devdocsDesignPage.hideMasterbar().then( function() {
-				driverHelper.eyesScreenshot( driver, eyes, 'DevDocs Design (App Components)' );
+				driverHelper.eyesScreenshot( driver, eyes, 'DevDocs Design (App Components)', by.id( 'primary' ) );
 			} );
 		} );
 	} );

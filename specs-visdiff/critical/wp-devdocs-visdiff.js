@@ -24,7 +24,7 @@ eyes.setApiKey( config.get( 'eyesKey' ) );
 eyes.setForceFullPageScreenshot( true );
 
 if ( process.env.CIRCLE_BUILD_NUM ) {
-	eyes.setBatch( `wp-e2e-tests #${process.env.CIRCLE_BUILD_NUM}`, process.env.CIRCLE_BUILD_NUM );
+	eyes.setBatch( `wp-e2e-tests #${process.env.CIRCLE_BUILD_NUM}`, ( new Date() ).getTime()  );
 }
 
 test.before( function() {

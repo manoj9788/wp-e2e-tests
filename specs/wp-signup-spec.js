@@ -8,6 +8,7 @@ import * as dataHelper from '../lib/data-helper.js';
 
 import WPHomePage from '../lib/pages/wp-home-page.js';
 import ChooseAThemePage from '../lib/pages/signup/choose-a-theme-page.js';
+import ThemePreviewPage from '../lib/pages/theme-preview-page.js';
 import StartPage from '../lib/pages/signup/start-page.js';
 import StartPremiumPage from '../lib/pages/signup/start-premium-page.js';
 import StartBusinessPage from '../lib/pages/signup/start-business-page.js';
@@ -89,6 +90,11 @@ test.describe( 'Sign Up (' + screenSize + ')', function() {
 
 					test.it( 'Can select the first theme', function() {
 						this.chooseAThemePage.selectFirstTheme();
+					} );
+
+					test.it( 'Can activate theme', function() {
+						this.themePreviewPage = new ThemePreviewPage( driver );
+						this.themePreviewPage.activate();
 					} );
 
 					test.describe( 'Step Four: Domains', function() {
@@ -256,6 +262,11 @@ test.describe( 'Sign Up (' + screenSize + ')', function() {
 						return this.chooseAThemePage.selectFirstTheme();
 					} );
 
+					test.it( 'Can activate theme', function() {
+						this.themePreviewPage = new ThemePreviewPage( driver );
+						this.themePreviewPage.activate();
+					} );
+
 					test.describe( 'Step Four: Domains', function() {
 						test.it( 'Can then see the domains page ', function() {
 							this.findADomainComponent = new FindADomainComponent( driver );
@@ -404,6 +415,11 @@ test.describe( 'Sign Up (' + screenSize + ')', function() {
 						return this.chooseAThemePage.selectFirstTheme();
 					} );
 
+					test.it( 'Can activate theme', function() {
+						this.themePreviewPage = new ThemePreviewPage( driver );
+						this.themePreviewPage.activate();
+					} );
+
 					test.describe( 'Step Four: Domains', function() {
 						test.it( 'Can then see the domains page ', function() {
 							this.findADomainComponent = new FindADomainComponent( driver );
@@ -545,6 +561,11 @@ test.describe( 'Sign Up (' + screenSize + ')', function() {
 
 					test.it( 'Can select the first theme', function() {
 						return this.chooseAThemePage.selectFirstTheme();
+					} );
+
+					test.it( 'Can activate theme', function() {
+						this.themePreviewPage = new ThemePreviewPage( driver );
+						this.themePreviewPage.activate();
 					} );
 
 					test.describe( 'Step Four: Domains', function() {
